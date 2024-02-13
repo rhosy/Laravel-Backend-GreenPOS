@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Categories')
+@section('title', 'Merchants')
 
 @push('style')
     <!-- CSS Libraries -->
@@ -8,17 +8,16 @@
 @endpush
 
 @section('main')
-
     <div class="main-content">
         <section class="section">
             <div class="section-header">
-                <h1>Categories</h1>
-                <div class="section-header-button">
-                    <a href="{{ route('category.create') }}" class="btn btn-primary">Add New</a>
-                </div>
+                <h1>Merchants</h1>
+                {{-- <div class="section-header-button">
+                    <a href="{{ route('use') }}" class="btn btn-primary">Add New</a>
+                </div> --}}
                 {{-- <div class="section-header-breadcrumb">
                     <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
-                    <div class="breadcrumb-item"><a href="#">Users</a></div>
+                    <div class="breadcrumb-item"><a href="#">merchants</a></div>
                     <div class="breadcrumb-item">All Users</div>
                 </div> --}}
             </div>
@@ -37,11 +36,22 @@
                 <div class="row mt-4">
                     <div class="col-12">
                         <div class="card">
+                            {{-- <div class="card-header">
+                                <h4>All Posts</h4>
+                            </div> --}}
                             <div class="card-body">
+                                {{-- <div class="float-left">  
+                                    <select class="form-control selectric">
+                                        <option>Action For Selected</option>
+                                        <option>Move to Draft</option>
+                                        <option>Move to Pending</option>
+                                        <option>Delete Pemanently</option>
+                                    </select>
+                                </div> --}}
                                 <div class="float-right">
-                                    <form method="GET" action="{{ route('category.index') }}">
+                                    <form method="GET" action="{{ route('merchant.index') }}">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Search" name="name">
+                                            <input type="text" class="form-control" placeholder="Search" name="search">
                                             <div class="input-group-append">
                                                 <button class="btn btn-primary"><i class="fas fa-search"></i></button>
                                             </div>
@@ -55,45 +65,47 @@
                                     <table class="table-striped table">
                                         <tr>
 
+                                            <th>Logo</th>
                                             <th>Name</th>
-                                            <th>Outlet</th>
                                             <th>Created At</th>
                                             <th>Action</th>
                                         </tr>
-
-                                        @foreach ($categories as $category)
+                                        @foreach ($merchants as $merchant)
                                             <tr>
-                                                <td>{{ $category->name }} </td>
-                                                <td>{{ $category->outlet->name ?? '-' }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($category->created_at)->format('d M y') }}</td>
                                                 <td>
+                                                    <a href="#">
+                                                        <img alt="image"
+                                                            src="{{ asset('storage/images/merchant/' . $merchant->logo) }}"
+                                                            onerror="this.onerror=null;this.src='{{ asset('img/avatar/avatar-1.png') }}'"
+                                                            class="rounded-circle"
+                                                            width="40"
+                                                            height="40"
+                                                            data-toggle="title"
+                                                            title="">
+                                                    </a>
+                                                </td>
+                                                <td>{{ $merchant->name }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($merchant->created_at)->format('d M y') }}</td>
+                                                <td>
+                                                    @if (Auth::user()->role == 'admin')
                                                     <div class="d-flex justify-content-center">
-                                                        <a href=' {{ route('category.edit', $category->id) }}'
+                                                        <a href='{{ route('merchant.edit', $merchant->id) }}'
                                                             class="btn btn-sm btn-info btn-icon">
                                                             <i class="fas fa-edit"></i>
                                                             Edit
                                                         </a>
-
-                                                        <form action="{{ route('category.destroy', $category->id) }}"
-                                                            method="POST" id="delete-form-{{ $category->id }}"
-                                                            class="ml-2">
-                                                            <input type="hidden" name="_method" value="DELETE" />
-                                                            <input type="hidden" name="_token"
-                                                                value="{{ csrf_token() }}" />
-                                                            <button class="btn btn-sm btn-danger btn-icon confirm-delete"
-                                                                data-confirm="Delete Confirmation?|Are you sure want to delete ?"
-                                                                data-confirm-yes="document.getElementById('delete-form-{{ $category->id }}').submit();">
-                                                                <i class="fas fa-times"></i> Delete
-                                                            </button>
-                                                        </form>
                                                     </div>
+                                                    @endif
+                                                    
                                                 </td>
                                             </tr>
                                         @endforeach
+
+
                                     </table>
                                 </div>
                                 <div class="float-right">
-                                    {{-- {{ $users->withQueryString()->links() }} --}}
+                                    {{-- {{ $merchants->withQueryString()->links() }} --}}
                                 </div>
                             </div>
                         </div>
@@ -110,4 +122,5 @@
 
     <!-- Page Specific JS File -->
     <script src="{{ asset('js/page/features-posts.js') }}"></script>
+   
 @endpush

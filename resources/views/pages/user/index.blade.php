@@ -40,7 +40,7 @@
                                 <h4>All Posts</h4>
                             </div> --}}
                             <div class="card-body">
-                                <div class="float-left">
+                                {{-- <div class="float-left">
                                     
                                     <select class="form-control selectric">
                                         <option>Action For Selected</option>
@@ -48,7 +48,7 @@
                                         <option>Move to Pending</option>
                                         <option>Delete Pemanently</option>
                                     </select>
-                                </div>
+                                </div> --}}
                                 <div class="float-right">
                                     <form method="GET" action="{{ route('user.index') }}">
                                         <div class="input-group">
@@ -70,6 +70,7 @@
                                             <th>Email</th>
                                             <th>Phone</th>
                                             <th>Role</th>
+                                            <th>Outlet</th>
                                             <th>Created At</th>
                                             <th>Action</th>
                                         </tr>
@@ -79,6 +80,7 @@
                                                 <td>{{ $user->email }}</td>
                                                 <td>{{ $user->phone }}</td>
                                                 <td>{{ $user->role }}</td>
+                                                <td>{{ $user->outlet->name ?? '-'}}</td>
                                                 <td>{{ \Carbon\Carbon::parse($user->created_at)->format('d M y') }}</td>
                                                 <td>
                                                     <div class="d-flex justify-content-center">
@@ -87,7 +89,7 @@
                                                             <i class="fas fa-edit"></i>
                                                             Edit
                                                         </a>
-                                                        @if ($user->role !== 'ADMIN')
+                                                        @if ($user->role !== 'admin' && $user->id !== Auth::user()->id)
                                                         <form action="{{ route('user.destroy', $user->id) }}" method="POST" id="delete-form-{{ $user->id }}"
                                                             class="ml-2">
                                                             <input type="hidden" name="_method" value="DELETE" />

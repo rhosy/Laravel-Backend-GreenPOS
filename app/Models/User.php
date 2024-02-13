@@ -4,8 +4,10 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -22,7 +24,9 @@ class User extends Authenticatable
         'email',
         'password',
         'phone',
-        'role'
+        'role',
+        'merchant_id',
+        'outlet_id',
     ];
 
     /**
@@ -44,4 +48,25 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function merchant()
+    {
+        return $this->hasOne(Merchant::class);
+    }
+
+    public function outlet()
+    {
+        return $this->belongsTo(Outlet::class);
+    }
+
+    public function getOutlets()
+    {
+        if ($this->outlet_id != null) {
+            $outlets = Outlet::with('province')->where('id', $this->outlet_id)->get();
+        } else {
+            $outlets = Outlet::with('province')->where('merchant_id', $this->merchant_id)->get();
+        }
+
+        return $outlets;
+    }
 }
